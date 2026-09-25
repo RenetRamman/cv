@@ -1,0 +1,6 @@
+# Copy this file to application-local.properties for local development overrides.
+# application-local.properties is gitignored and loaded automatically when present.
+
+DB_URL=jdbc:postgresql://localhost:5432/cv
+DB_USERNAME=cv
+DB_PASSWORD=cv
