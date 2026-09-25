@@ -14,3 +14,15 @@ Goals
 - Demonstrate CI/CD
 - Demonstrate localization
 - Demonstrate testing
+
+
+
+
+# Start PostgreSQL
+docker compose up -d
+
+# Run tests (requires Docker)
+cd cvbackend && ./mvnw test
+
+# Or start the backend against the running database
+cd cvbackend && ./mvnw spring-boot:run
