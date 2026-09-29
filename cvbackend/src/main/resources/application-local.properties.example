@@ -1,6 +1,8 @@
-# Copy this file to application-local.properties for local development overrides.
-# application-local.properties is gitignored and loaded automatically when present.
+# Copy this file to application-local.properties for local development.
+# application-local.properties is gitignored and loaded when the "local" profile is active.
+#
+# Keep these values in sync with the DB_* / POSTGRES_* entries in the project-root .env file.
 
-DB_URL=jdbc:postgresql://localhost:5432/cv
-DB_USERNAME=cv
-DB_PASSWORD=cv
+spring.datasource.url=jdbc:postgresql://localhost:5432/cv
+spring.datasource.username=cv
+spring.datasource.password=cv
