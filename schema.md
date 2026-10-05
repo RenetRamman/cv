@@ -2,6 +2,8 @@
 
 Concrete schema reflecting what we’ve locked in: bullets on experience/education/projects, introductions FK’d to role profiles, tags included now (including on project bullets), single language for now.
 
+CV content ordering is **not** stored as `sort_order` columns. Skills, experiences, education, projects, and their bullets are ordered at query time by tag relevance to the selected `role_profile`. The only remaining `sort_order` is on `role_profile` itself (UI role-selector order).
+
 ## Diagram
 
 ![CV database schema](images/db_schema.png)
@@ -85,7 +87,6 @@ Use `BIGINT` identity PKs everywhere. One language only for now (no locale colum
 | `profile_id` | FK → profile | |
 | `label` | VARCHAR NOT NULL | e.g. GitHub, LinkedIn |
 | `url` | VARCHAR NOT NULL | |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 ### Role awareness (included now)
 
@@ -105,7 +106,7 @@ Use `BIGINT` identity PKs everywhere. One language only for now (no locale colum
 | `slug` | VARCHAR NOT NULL UNIQUE | `general`, `java`, `backend`, … (URLs later) |
 | `name` | VARCHAR NOT NULL | e.g. Java Developer |
 | `type` | VARCHAR NOT NULL | `GENERAL` \| `PERMANENT` \| `VACANCY` |
-| `sort_order` | INT NOT NULL DEFAULT 0 | selector order |
+| `sort_order` | INT NOT NULL DEFAULT 0 | order in the role selector UI only |
 | `created_at` / `updated_at` | TIMESTAMPTZ | |
 
 Constraints worth adding:
@@ -146,7 +147,6 @@ Constraints worth adding:
 | `location` | VARCHAR | |
 | `start_date` | DATE NOT NULL | |
 | `end_date` | DATE | null = current |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`experience_bullet`**
 
@@ -155,7 +155,6 @@ Constraints worth adding:
 | `id` | BIGINT PK | |
 | `experience_id` | FK | |
 | `content` | TEXT NOT NULL | |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`experience_bullet_tag`** — `(experience_bullet_id, tag_id)` PK
 
@@ -172,7 +171,6 @@ Constraints worth adding:
 | `field` | VARCHAR | programme / major |
 | `start_date` | DATE | |
 | `end_date` | DATE | |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`education_bullet`**
 
@@ -181,7 +179,6 @@ Constraints worth adding:
 | `id` | BIGINT PK | |
 | `education_id` | FK | |
 | `content` | TEXT NOT NULL | courses, topics, achievements |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`education_bullet_tag`** — `(education_bullet_id, tag_id)` PK
 
@@ -196,7 +193,6 @@ Constraints worth adding:
 | `id` | BIGINT PK | |
 | `profile_id` | FK | |
 | `name` | VARCHAR NOT NULL | Backend, Frontend, … |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`skill`**
 
@@ -205,7 +201,6 @@ Constraints worth adding:
 | `id` | BIGINT PK | |
 | `category_id` | FK | |
 | `name` | VARCHAR NOT NULL | Java, Spring Boot, … |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`skill_tag`** — `(skill_id, tag_id)` PK
 
@@ -221,7 +216,6 @@ Constraints worth adding:
 | `description` | TEXT | short overview (optional) |
 | `github_url` | VARCHAR | |
 | `live_url` | VARCHAR | |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`project_bullet`**
 
@@ -230,7 +224,6 @@ Constraints worth adding:
 | `id` | BIGINT PK | |
 | `project_id` | FK | |
 | `content` | TEXT NOT NULL | |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`project_technology`** — display chips on the project (not the relevance model)
 
@@ -239,17 +232,17 @@ Constraints worth adding:
 | `id` | BIGINT PK | |
 | `project_id` | FK | |
 | `name` | VARCHAR NOT NULL | e.g. React, PostgreSQL |
-| `sort_order` | INT NOT NULL DEFAULT 0 | |
 
 **`project_bullet_tag`** — `(project_bullet_id, tag_id)` PK for relevance (aligned with experience/education bullets)
 
 ## Design notes
 
-1. **`project_technology` vs tags** — technologies are for UI labels; tags on **project bullets** drive scoring. A project can show “React” as a chip and have bullets tagged `frontend` / `react`.
-2. **No i18n columns** — add translation later when needed.
-3. **No admin/user tables** — Epic 6.
-4. **Vacancy profiles** — same `role_profile` + weights; extra vacancy metadata can wait until Epic 7.
-5. **`profile_id` everywhere** — slightly redundant for a single CV, but keeps FKs clear and avoids a special-case “global” model.
+1. **Ordering** — CV sections/items are ordered by tag relevance to the active role profile (Epic 4 scoring), not by stored `sort_order`. `role_profile.sort_order` is only for the role dropdown.
+2. **`project_technology` vs tags** — technologies are for UI labels; tags on **project bullets** drive scoring. A project can show “React” as a chip and have bullets tagged `frontend` / `react`.
+3. **No i18n columns** — add translation later when needed.
+4. **No admin/user tables** — Epic 6.
+5. **Vacancy profiles** — same `role_profile` + weights; extra vacancy metadata can wait until Epic 7.
+6. **`profile_id` everywhere** — slightly redundant for a single CV, but keeps FKs clear and avoids a special-case “global” model.
 
 ## Suggested split for issues
 
@@ -265,6 +258,7 @@ Paste into [DrawSQL](https://drawsql.app/draw) via File → Import (PostgreSQL).
 ```dbml
 // CV schema design for issue #10
 // Single language for now; i18n later via Flyway
+// CV content order comes from tag relevance, not sort_order columns
 
 Enum role_profile_type {
   GENERAL
@@ -325,10 +319,9 @@ Table contact_link {
   profile_id bigint [not null]
   label varchar [not null]
   url varchar [not null]
-  sort_order int [not null, default: 0]
 
   Indexes {
-    (profile_id, sort_order)
+    profile_id
   }
 }
 
@@ -343,7 +336,7 @@ Table role_profile {
   slug varchar [not null, unique, note: 'general, java, backend, ...']
   name varchar [not null]
   type role_profile_type [not null]
-  sort_order int [not null, default: 0]
+  sort_order int [not null, default: 0, note: 'role selector UI order only']
   created_at timestamptz [not null, default: `now()`]
   updated_at timestamptz [not null, default: `now()`]
 }
@@ -373,14 +366,12 @@ Table experience {
   location varchar
   start_date date [not null]
   end_date date [note: 'null = current']
-  sort_order int [not null, default: 0]
 }
 
 Table experience_bullet {
   id bigint [pk, increment]
   experience_id bigint [not null]
   content text [not null]
-  sort_order int [not null, default: 0]
 }
 
 Table experience_bullet_tag {
@@ -400,14 +391,12 @@ Table education {
   field varchar
   start_date date
   end_date date
-  sort_order int [not null, default: 0]
 }
 
 Table education_bullet {
   id bigint [pk, increment]
   education_id bigint [not null]
   content text [not null]
-  sort_order int [not null, default: 0]
 }
 
 Table education_bullet_tag {
@@ -423,14 +412,12 @@ Table skill_category {
   id bigint [pk, increment]
   profile_id bigint [not null]
   name varchar [not null]
-  sort_order int [not null, default: 0]
 }
 
 Table skill {
   id bigint [pk, increment]
   category_id bigint [not null]
   name varchar [not null]
-  sort_order int [not null, default: 0]
 }
 
 Table skill_tag {
@@ -449,21 +436,18 @@ Table project {
   description text
   github_url varchar
   live_url varchar
-  sort_order int [not null, default: 0]
 }
 
 Table project_bullet {
   id bigint [pk, increment]
   project_id bigint [not null]
   content text [not null]
-  sort_order int [not null, default: 0]
 }
 
 Table project_technology {
   id bigint [pk, increment]
   project_id bigint [not null]
   name varchar [not null, note: 'display chip; relevance uses project_bullet_tag']
-  sort_order int [not null, default: 0]
 }
 
 Table project_bullet_tag {
