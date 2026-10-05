@@ -69,6 +69,10 @@ class ExperienceControllerTest {
 
 		long id = readId(createResult);
 
+		org.junit.jupiter.api.Assertions.assertTrue(
+				createResult.getResponse().getHeader("Location").endsWith("/api/experiences/" + id)
+		);
+
 		mockMvc.perform(get("/api/experiences/" + id))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.company").value("Acme"))
@@ -158,7 +162,7 @@ class ExperienceControllerTest {
 						  "contactLinks": []
 						}
 						"""))
-			.andExpect(status().isOk());
+			.andExpect(status().isCreated());
 	}
 
 	private long createExperience(String company, String title) throws Exception {
