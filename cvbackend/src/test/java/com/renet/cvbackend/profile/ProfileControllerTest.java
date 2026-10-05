@@ -2,6 +2,7 @@ package com.renet.cvbackend.profile;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +51,8 @@ class ProfileControllerTest {
 						  ]
 						}
 						"""))
-			.andExpect(status().isOk())
+			.andExpect(status().isCreated())
+			.andExpect(header().string("Location", "/api/profile"))
 			.andExpect(jsonPath("$.id").isNumber())
 			.andExpect(jsonPath("$.fullName").value("Jane Doe"))
 			.andExpect(jsonPath("$.headline").value("Backend Developer"))
@@ -126,7 +128,8 @@ class ProfileControllerTest {
 						    { "label": "GitHub", "url": "https://github.com/janedoe" }
 						  ]
 						}
-						"""));
+						"""))
+			.andExpect(status().isCreated());
 	}
 
 }

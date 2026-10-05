@@ -21,9 +21,10 @@ public class ProfileService {
 	}
 
 	@Transactional
-	public ProfileResponse upsertProfile(UpdateProfileRequest request) {
-		var profile = profileRepository.findFirstByOrderByIdAsc()
-				.orElseGet(Profile::new);
+	public ProfileUpsertResult upsertProfile(UpdateProfileRequest request) {
+		var existing = profileRepository.findFirstByOrderByIdAsc();
+		boolean newlyCreated = existing.isEmpty();
+		var profile = existing.orElseGet(Profile::new);
 
 		profile.setFullName(request.fullName());
 		profile.setHeadline(request.headline());
@@ -32,7 +33,8 @@ public class ProfileService {
 		profile.setLocation(request.location());
 		replaceContactLinks(profile, request.contactLinks());
 
-		return ProfileResponse.from(profileRepository.save(profile));
+		ProfileResponse saved = ProfileResponse.from(profileRepository.save(profile));
+		return new ProfileUpsertResult(saved, newlyCreated);
 	}
 
 	private void replaceContactLinks(Profile profile, List<UpdateContactLinkRequest> contactLinks) {

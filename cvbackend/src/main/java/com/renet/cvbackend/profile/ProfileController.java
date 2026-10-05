@@ -1,6 +1,8 @@
 package com.renet.cvbackend.profile;
 
 import jakarta.validation.Valid;
+import java.net.URI;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +25,15 @@ public class ProfileController {
 	}
 
 	@PutMapping
-	public ProfileResponse upsertProfile(@Valid @RequestBody UpdateProfileRequest request) {
-		return profileService.upsertProfile(request);
+	public ResponseEntity<ProfileResponse> upsertProfile(@Valid @RequestBody UpdateProfileRequest request) {
+		ProfileUpsertResult result = profileService.upsertProfile(request);
+
+		if (result.newlyCreated()) {
+			URI location = URI.create("/api/profile");
+			return ResponseEntity.created(location).body(result.profile());
+		}
+
+		return ResponseEntity.ok(result.profile());
 	}
 
 }
