@@ -1,6 +1,7 @@
 package com.renet.cvbackend.experience;
 
 import com.renet.cvbackend.profile.ProfileRepository;
+import com.renet.cvbackend.profile.ProfileRequiredException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

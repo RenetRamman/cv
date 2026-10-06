@@ -15,4 +15,10 @@ public class ProfileExceptionHandler {
 		return Map.of("message", exception.getMessage());
 	}
 
+	@ExceptionHandler(ProfileRequiredException.class)
+	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+	Map<String, String> handleProfileRequired(ProfileRequiredException exception) {
+		return Map.of("message", exception.getMessage());
+	}
+
 }
