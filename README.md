@@ -29,7 +29,7 @@ cp cvbackend/src/main/resources/application-local.properties.example \
 
 Keep database credentials in `.env` and `application-local.properties` in sync.
 
-### Run
+### Run backend
 
 Start PostgreSQL:
 
@@ -47,6 +47,30 @@ Run the backend (uses the `local` profile by default):
 
 ```bash
 cd cvbackend && ./mvnw spring-boot:run
+```
+
+### Run frontend
+
+The public CV UI lives in `cvfrontend` (React + TypeScript + Vite). Issue #24 covers the layout with placeholder data; wiring to the API is issue #25.
+
+UI prototype (Figma, anyone can view):
+
+[Dynamic CV — Frontend](https://www.figma.com/design/Ydm6VDiSyoTZcXfsSGQTLW/Dynamic-CV-%E2%80%94-Frontend?node-id=0-1&t=Elae0uMDNEritJyg-1)
+
+```bash
+cd cvfrontend
+npm install
+npm run dev
+```
+
+Then open the URL Vite prints (usually `http://localhost:5173`).
+
+Other useful scripts:
+
+```bash
+npm run build    # production build to cvfrontend/dist
+npm run preview  # serve the production build locally
+npm run lint     # oxlint
 ```
 
 ### Application profiles
