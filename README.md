@@ -51,11 +51,13 @@ cd cvbackend && ./mvnw spring-boot:run
 
 ### Run frontend
 
-The public CV UI lives in `cvfrontend` (React + TypeScript + Vite). Issue #24 covers the layout with placeholder data; wiring to the API is issue #25.
+The public CV UI lives in `cvfrontend` (React + TypeScript + Vite). It loads CV content from the Spring Boot REST API (`/api/...`).
 
 UI prototype (Figma, anyone can view):
 
 [Dynamic CV — Frontend](https://www.figma.com/design/Ydm6VDiSyoTZcXfsSGQTLW/Dynamic-CV-%E2%80%94-Frontend?node-id=0-1&t=Elae0uMDNEritJyg-1)
+
+Start PostgreSQL and the backend first (see above), then:
 
 ```bash
 cd cvfrontend
@@ -64,6 +66,8 @@ npm run dev
 ```
 
 Then open the URL Vite prints (usually `http://localhost:5173`).
+
+In local development, Vite proxies `/api` to `http://localhost:8080`, so the browser can call the backend without a separate CORS setup. The backend also allows the Vite origins directly if you set `VITE_API_BASE_URL` (see `cvfrontend/.env.example`).
 
 Other useful scripts:
 

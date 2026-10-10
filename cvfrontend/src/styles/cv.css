@@ -1,3 +1,29 @@
+.cv-status {
+  display: grid;
+  place-content: center;
+  gap: 0.75rem;
+  min-height: 100vh;
+  padding: var(--page-pad);
+  text-align: center;
+  color: var(--color-ink);
+  background: var(--color-bg);
+}
+
+.cv-status--error {
+  color: var(--color-ink-deep);
+}
+
+.cv-status__detail {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.cv-status__hint {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
 .cv-page {
   display: flex;
   flex-direction: column;

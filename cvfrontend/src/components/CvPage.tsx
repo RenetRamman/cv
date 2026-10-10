@@ -1,22 +1,23 @@
 import { useState } from 'react'
-import { placeholderCv } from '../data/placeholders'
-import type { RoleId } from '../types/cv'
+import type { CvData, RoleId } from '../types/cv'
 import { DownloadIcon } from './DownloadIcon'
 import '../styles/cv.css'
 
-const roleLabels: Record<RoleId, string> = {
-  java: 'Java',
-  backend: 'Backend',
-  fullstack: 'Full Stack',
-  'ml-ai': 'ML / AI',
+interface CvPageProps {
+  data: CvData
 }
 
-export function CvPage() {
-  const data = placeholderCv
+export function CvPage({ data }: CvPageProps) {
   const [selectedRoleId, setSelectedRoleId] = useState<RoleId>(
     data.defaultRoleId,
   )
-  const selectedLabel = roleLabels[selectedRoleId]
+  const selectedLabel =
+    data.roles.find((role) => role.id === selectedRoleId)?.label ??
+    selectedRoleId
+  const introduction =
+    data.introductions[selectedRoleId] ??
+    data.introductions.general ??
+    ''
 
   return (
     <div className="cv-page">
@@ -100,9 +101,7 @@ export function CvPage() {
           <span className="cv-badge">Tailored for {selectedLabel}</span>
         </div>
         <div className="cv-intro__body">
-          <p className="cv-intro__text">
-            {data.introductions[selectedRoleId]}
-          </p>
+          <p className="cv-intro__text">{introduction}</p>
         </div>
       </section>
 
@@ -119,7 +118,7 @@ export function CvPage() {
           </span>
         </div>
         {data.experience.map((job) => (
-          <article key={`${job.company}-${job.title}`} className="cv-entry">
+          <article key={job.id} className="cv-entry">
             <div className="cv-entry__header">
               <div className="cv-entry__titles">
                 <h3 className="cv-entry__title">{job.title}</h3>
@@ -188,7 +187,7 @@ export function CvPage() {
         </div>
         <div className="cv-projects">
           {data.projects.map((project) => (
-            <article key={project.title} className="cv-project">
+            <article key={project.id} className="cv-project">
               <div className="cv-project__header">
                 <h3 className="cv-project__title">{project.title}</h3>
                 <div className="cv-project__links">
@@ -247,10 +246,7 @@ export function CvPage() {
           </h2>
         </div>
         {data.education.map((edu) => (
-          <article
-            key={`${edu.institution}-${edu.degree}`}
-            className="cv-entry"
-          >
+          <article key={edu.id} className="cv-entry">
             <div className="cv-entry__header">
               <div className="cv-entry__titles">
                 <h3 className="cv-entry__title">{edu.degree}</h3>

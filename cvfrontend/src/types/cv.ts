@@ -1,4 +1,5 @@
-export type RoleId = 'java' | 'backend' | 'fullstack' | 'ml-ai'
+/** Role profile slug from the API (e.g. java, backend, fullstack). */
+export type RoleId = string
 
 export interface RoleOption {
   id: RoleId
@@ -11,6 +12,7 @@ export interface ContactLink {
 }
 
 export interface ExperienceEntry {
+  id: number
   title: string
   company: string
   location: string
@@ -24,6 +26,7 @@ export interface SkillCategory {
 }
 
 export interface ProjectEntry {
+  id: number
   title: string
   description: string
   githubUrl?: string
@@ -33,13 +36,15 @@ export interface ProjectEntry {
 }
 
 export interface EducationEntry {
+  id: number
   degree: string
   institution: string
   dates: string
   bullets: string[]
 }
 
-export interface CvPlaceholderData {
+/** View model for the public CV page (mapped from REST responses). */
+export interface CvData {
   siteTitle: string
   brandMark: string
   fullName: string
