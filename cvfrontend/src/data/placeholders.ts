@@ -1,17 +1,17 @@
-import type { CvPlaceholderData } from '../types/cv'
+import type { CvData } from '../types/cv'
 
-/** Static placeholder content for layout work (issue #24). Replaced by API data in #25. */
-export const placeholderCv: CvPlaceholderData = {
+/** Static sample kept as a shape reference. The app loads live data via the API. */
+export const placeholderCv: CvData = {
   siteTitle: 'Dynamic CV',
-  brandMark: 'CV',
-  fullName: 'Bob Bobson',
+  brandMark: 'YN',
+  fullName: 'Your Full Name',
   headline:
-    'Full-stack developer connecting APIs with clear interfaces.',
+    'Short headline — e.g. Full-stack developer connecting APIs with clear interfaces.',
   location: 'City, Country',
-  email: 'Bob@example.com',
+  email: 'you@example.com',
   contactLinks: [
-    { label: 'GitHub', url: 'https://github.com/bob' },
-    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/bob' },
+    { label: 'GitHub', url: 'https://github.com/your-username' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/your-username' },
   ],
   roles: [
     { id: 'java', label: 'Java' },
@@ -21,16 +21,14 @@ export const placeholderCv: CvPlaceholderData = {
   ],
   defaultRoleId: 'fullstack',
   introductions: {
-    java: 'Placeholder Java-focused introduction. Describe how you approach JVM services, APIs, and data.',
-    backend:
-      'Placeholder backend-focused introduction. Describe APIs, data models, and reliability work.',
-    fullstack:
-      'Placeholder full-stack introduction. Describe how you deliver features across API and UI layers.',
-    'ml-ai':
-      'Placeholder ML / AI introduction. Describe modeling, evaluation, and how it connects to product work.',
+    java: 'Placeholder Java-focused introduction.',
+    backend: 'Placeholder backend-focused introduction.',
+    fullstack: 'Placeholder full-stack introduction.',
+    'ml-ai': 'Placeholder ML / AI introduction.',
   },
   experience: [
     {
+      id: 1,
       title: 'Job Title',
       company: 'Example Company',
       location: 'City',
@@ -38,17 +36,6 @@ export const placeholderCv: CvPlaceholderData = {
       bullets: [
         'Placeholder bullet describing a concrete achievement or responsibility.',
         'Another placeholder bullet about tools, collaboration, or impact.',
-        'Optional third bullet for depth on this role.',
-      ],
-    },
-    {
-      title: 'Earlier Job Title',
-      company: 'Another Company',
-      location: 'City',
-      dates: '2021 — 2023',
-      bullets: [
-        'Placeholder bullet from an earlier role.',
-        'Second placeholder bullet with measurable or clear outcome language.',
       ],
     },
   ],
@@ -57,59 +44,29 @@ export const placeholderCv: CvPlaceholderData = {
       name: 'Backend',
       skills: [
         { name: 'Skill A', highlighted: true },
-        { name: 'Skill B', highlighted: true },
-        { name: 'Skill C' },
-        { name: 'Skill D' },
-      ],
-    },
-    {
-      name: 'Frontend',
-      skills: [
-        { name: 'Skill E', highlighted: true },
-        { name: 'Skill F', highlighted: true },
-        { name: 'Skill G' },
-      ],
-    },
-    {
-      name: 'Tools',
-      skills: [
-        { name: 'Skill H', highlighted: true },
-        { name: 'Skill I' },
-        { name: 'Skill J' },
+        { name: 'Skill B' },
       ],
     },
   ],
   projects: [
     {
+      id: 1,
       title: 'Example Project',
-      description:
-        'Short placeholder description of what the project does and why it matters.',
-      githubUrl: 'https://github.com/bob/example',
+      description: 'Short placeholder description of what the project does.',
+      githubUrl: 'https://github.com/your-username/example',
       liveUrl: 'https://example.com',
-      bullets: [
-        'Placeholder project bullet about architecture or delivery.',
-        'Second placeholder bullet about a notable detail.',
-      ],
-      technologies: ['Tech A', 'Tech B', 'Tech C', 'Tech D'],
-    },
-    {
-      title: 'Second Project',
-      description: 'Another short placeholder project description.',
-      githubUrl: 'https://github.com/bob/second',
-      bullets: [
-        'Placeholder bullet for the second project.',
-      ],
-      technologies: ['Tech A', 'Tech B', 'Tech E'],
+      bullets: ['Placeholder project bullet about architecture or delivery.'],
+      technologies: ['Tech A', 'Tech B'],
     },
   ],
   education: [
     {
+      id: 1,
       degree: 'Degree — Field of Study',
       institution: 'University Name',
       dates: '2019 — 2023',
       bullets: [
         'Placeholder education bullet (coursework, thesis, or focus areas).',
-        'Second placeholder education bullet.',
       ],
     },
   ],
