@@ -124,12 +124,23 @@ function mapProject(project: ProjectResponse) {
   }
 }
 
-function formatDateRange(startDate: string, endDate: string | null): string {
-  const start = formatYear(startDate)
-  if (!endDate) {
+function formatDateRange(
+  startDate: string | null,
+  endDate: string | null,
+): string {
+  const start = startDate ? formatYear(startDate) : null
+  const end = endDate ? formatYear(endDate) : null
+
+  if (start && end) {
+    return `${start} — ${end}`
+  }
+  if (start && !end) {
     return `${start} — Present`
   }
-  return `${start} — ${formatYear(endDate)}`
+  if (!start && end) {
+    return end
+  }
+  return ''
 }
 
 function formatYear(isoDate: string): string {

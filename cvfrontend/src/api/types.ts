@@ -43,7 +43,7 @@ export interface EducationResponse {
   institution: string
   degree: string
   field: string
-  startDate: string
+  startDate: string | null
   endDate: string | null
   bullets: { id: number; content: string }[]
 }
