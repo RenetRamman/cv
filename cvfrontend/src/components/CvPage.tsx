@@ -16,6 +16,17 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
   const introduction = data.introduction
   const siteUrl = projectHomeUrl()
 
+  const handlePrint = () => {
+    const previousTitle = document.title
+    document.title = `${data.fullName} – ${selectedLabel}`
+    const restoreTitle = () => {
+      document.title = previousTitle
+      window.removeEventListener('afterprint', restoreTitle)
+    }
+    window.addEventListener('afterprint', restoreTitle)
+    window.print()
+  }
+
   return (
     <div className="cv-page">
       <header className="cv-shell cv-nav">
@@ -35,10 +46,14 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
               {link.label}
             </a>
           ))}
-          <a className="cv-btn cv-btn--primary" href="#download-pdf">
+          <button
+            type="button"
+            className="cv-btn cv-btn--primary"
+            onClick={handlePrint}
+          >
             <DownloadIcon />
             Download PDF
-          </a>
+          </button>
         </nav>
       </header>
 
@@ -285,9 +300,13 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
             <a className="cv-btn cv-btn--accent" href={`mailto:${data.email}`}>
               Contact
             </a>
-            <a className="cv-btn cv-btn--ghost" href="#download-pdf">
+            <button
+              type="button"
+              className="cv-btn cv-btn--ghost"
+              onClick={handlePrint}
+            >
               Download PDF
-            </a>
+            </button>
           </div>
         </div>
       </footer>
