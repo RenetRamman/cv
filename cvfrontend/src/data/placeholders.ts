@@ -46,8 +46,8 @@ export const placeholderCv: CvData = {
     {
       name: 'Backend',
       skills: [
-        { name: 'Skill A', highlighted: true },
-        { name: 'Skill B' },
+        { id: 1, name: 'Skill A', highlighted: true },
+        { id: 2, name: 'Skill B' },
       ],
     },
   ],

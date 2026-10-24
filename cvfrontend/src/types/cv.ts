@@ -20,9 +20,15 @@ export interface ExperienceEntry {
   bullets: string[]
 }
 
+export interface SkillItem {
+  id: number
+  name: string
+  highlighted?: boolean
+}
+
 export interface SkillCategory {
   name: string
-  skills: { name: string; highlighted?: boolean }[]
+  skills: SkillItem[]
 }
 
 export interface ProjectEntry {

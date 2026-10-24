@@ -1,3 +1,4 @@
+import { useSkillHighlights } from '../hooks/useSkillHighlights'
 import type { CvData, RoleId } from '../types/cv'
 import { projectHomeUrl, publicUrl } from '../utils/projectHomeUrl'
 import { DownloadIcon } from './DownloadIcon'
@@ -15,6 +16,10 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
     selectedRoleId
   const introduction = data.introduction
   const siteUrl = projectHomeUrl()
+  const { isHighlighted, toggleSkill } = useSkillHighlights(
+    data.skills,
+    selectedRoleId,
+  )
 
   const handlePrint = () => {
     const previousTitle = document.title
@@ -166,7 +171,7 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
             Skills
           </h2>
           <span className="cv-hint cv-hint--accent">
-            Highlighted skills match {selectedLabel} tags
+            Click to customize highlights for {selectedLabel}
           </span>
         </div>
         <div className="cv-skills">
@@ -174,18 +179,25 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
             <div key={group.name} className="cv-skill-group">
               <h3 className="cv-skill-group__name">{group.name}</h3>
               <ul className="cv-skill-chips">
-                {group.skills.map((skill) => (
-                  <li
-                    key={skill.name}
-                    className={
-                      skill.highlighted
-                        ? 'cv-skill-chip is-highlighted'
-                        : 'cv-skill-chip'
-                    }
-                  >
-                    {skill.name}
-                  </li>
-                ))}
+                {group.skills.map((skill) => {
+                  const highlighted = isHighlighted(skill.id)
+                  return (
+                    <li key={skill.id}>
+                      <button
+                        type="button"
+                        className={
+                          highlighted
+                            ? 'cv-skill-chip is-highlighted'
+                            : 'cv-skill-chip'
+                        }
+                        aria-pressed={highlighted}
+                        onClick={() => toggleSkill(skill.id)}
+                      >
+                        {skill.name}
+                      </button>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           ))}

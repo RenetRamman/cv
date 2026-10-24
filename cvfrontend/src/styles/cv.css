@@ -448,12 +448,27 @@
   background: var(--color-surface-white);
   font-size: 0.875rem;
   color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.cv-skill-chip:hover,
+.cv-skill-chip:focus-visible {
+  border-color: var(--color-teal);
 }
 
 .cv-skill-chip.is-highlighted {
   background: var(--color-teal-soft);
   border-color: color-mix(in srgb, var(--color-teal) 35%, var(--color-border));
   color: var(--color-ink-deep);
+}
+
+.cv-skill-chip.is-highlighted:hover,
+.cv-skill-chip.is-highlighted:focus-visible {
+  border-color: var(--color-teal);
 }
 
 /* —— Projects —— */
