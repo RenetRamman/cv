@@ -27,7 +27,10 @@ FROM (VALUES
     ('data', 'Data'),
     ('docker', 'Docker'),
     ('api', 'API'),
-    ('database', 'Database')
+    ('database', 'Database'),
+    ('git', 'Git'),
+    ('cursor', 'Cursor'),
+    ('linux', 'Linux')
     -- ('your-slug', 'Your Tag Name')
 ) AS v(slug, name)
 WHERE NOT EXISTS (SELECT 1 FROM tag t WHERE t.slug = v.slug);
@@ -61,6 +64,8 @@ FROM (VALUES
     ('general', 'frontend', 0.500),
     ('general', 'fullstack', 0.400),
     ('general', 'api', 0.300),
+    ('general', 'git', 0.300),
+    ('general', 'cursor', 0.300),
     -- java (JVM / Spring focused)
     ('java', 'java', 1.000),
     ('java', 'spring', 1.000),
@@ -68,6 +73,8 @@ FROM (VALUES
     ('java', 'api', 0.700),
     ('java', 'database', 0.600),
     ('java', 'docker', 0.300),
+    ('java', 'git', 0.300),
+    ('java', 'cursor', 0.300),
     -- backend (APIs / data / polyglot server-side)
     ('backend', 'backend', 1.000),
     ('backend', 'api', 0.900),
@@ -77,6 +84,8 @@ FROM (VALUES
     ('backend', 'spring', 0.500),
     ('backend', 'docker', 0.500),
     ('backend', 'data', 0.400),
+    ('backend', 'git', 0.300),
+    ('backend', 'cursor', 0.300),
     -- fullstack (frontend + backend + integration)
     ('fullstack', 'fullstack', 1.000),
     ('fullstack', 'frontend', 1.000),
@@ -87,13 +96,18 @@ FROM (VALUES
     ('fullstack', 'database', 0.500),
     ('fullstack', 'docker', 0.400),
     ('fullstack', 'python', 0.300),
+    ('fullstack', 'git', 0.300),
+    ('fullstack', 'cursor', 0.300),
     -- ml-ai
     ('ml-ai', 'ml', 1.000),
     ('ml-ai', 'ai', 1.000),
     ('ml-ai', 'python', 0.900),
     ('ml-ai', 'data', 0.800),
     ('ml-ai', 'backend', 0.400),
-    ('ml-ai', 'api', 0.300)
+    ('ml-ai', 'api', 0.300),
+    ('ml-ai', 'linux', 0.400),
+    ('ml-ai', 'git', 0.300),
+    ('ml-ai', 'cursor', 0.300)
     -- ('role-slug', 'tag-slug', 0.800)
 ) AS v(role_slug, tag_slug, weight)
 JOIN role_profile rp ON rp.slug = v.role_slug
