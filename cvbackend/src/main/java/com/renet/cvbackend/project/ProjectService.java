@@ -2,6 +2,7 @@ package com.renet.cvbackend.project;
 
 import com.renet.cvbackend.profile.ProfileRepository;
 import com.renet.cvbackend.profile.ProfileRequiredException;
+import com.renet.cvbackend.tag.ContentTagAssigner;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +12,16 @@ public class ProjectService {
 
 	private final ProjectRepository projectRepository;
 	private final ProfileRepository profileRepository;
+	private final ContentTagAssigner contentTagAssigner;
 
-	public ProjectService(ProjectRepository projectRepository, ProfileRepository profileRepository) {
+	public ProjectService(
+			ProjectRepository projectRepository,
+			ProfileRepository profileRepository,
+			ContentTagAssigner contentTagAssigner
+	) {
 		this.projectRepository = projectRepository;
 		this.profileRepository = profileRepository;
+		this.contentTagAssigner = contentTagAssigner;
 	}
 
 	@Transactional(readOnly = true)
@@ -79,6 +86,7 @@ public class ProjectService {
 			var bullet = new ProjectBullet();
 			bullet.setProject(project);
 			bullet.setContent(bulletRequest.content());
+			contentTagAssigner.replaceTags(bullet.getTags(), bulletRequest.tagIds());
 			project.getBullets().add(bullet);
 		}
 	}

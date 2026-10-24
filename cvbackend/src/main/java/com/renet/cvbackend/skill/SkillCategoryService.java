@@ -2,6 +2,7 @@ package com.renet.cvbackend.skill;
 
 import com.renet.cvbackend.profile.ProfileRepository;
 import com.renet.cvbackend.profile.ProfileRequiredException;
+import com.renet.cvbackend.tag.ContentTagAssigner;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +12,16 @@ public class SkillCategoryService {
 
 	private final SkillCategoryRepository skillCategoryRepository;
 	private final ProfileRepository profileRepository;
+	private final ContentTagAssigner contentTagAssigner;
 
 	public SkillCategoryService(
 			SkillCategoryRepository skillCategoryRepository,
-			ProfileRepository profileRepository
+			ProfileRepository profileRepository,
+			ContentTagAssigner contentTagAssigner
 	) {
 		this.skillCategoryRepository = skillCategoryRepository;
 		this.profileRepository = profileRepository;
+		this.contentTagAssigner = contentTagAssigner;
 	}
 
 	@Transactional(readOnly = true)
@@ -78,6 +82,7 @@ public class SkillCategoryService {
 			var skill = new Skill();
 			skill.setCategory(category);
 			skill.setName(skillRequest.name());
+			contentTagAssigner.replaceTags(skill.getTags(), skillRequest.tagIds());
 			category.getSkills().add(skill);
 		}
 	}

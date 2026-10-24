@@ -153,6 +153,85 @@ class ExperienceControllerTest {
 			.andExpect(status().isBadRequest());
 	}
 
+	@Test
+	void createExperience_withTags_returnsTagsOnBullets() throws Exception {
+		createProfile();
+		long javaTagId = createTag("java", "Java");
+		long springTagId = createTag("spring", "Spring");
+
+		mockMvc.perform(post("/api/experiences")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "company": "Acme",
+						  "title": "Engineer",
+						  "location": "Tallinn",
+						  "startDate": "2020-01-01",
+						  "endDate": null,
+						  "bullets": [
+						    {
+						      "content": "Built REST APIs",
+						      "tagIds": [%d, %d]
+						    }
+						  ]
+						}
+						""".formatted(javaTagId, springTagId)))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.bullets[0].tags.length()").value(2))
+			.andExpect(jsonPath("$.bullets[0].tags[0].tagId").value(javaTagId))
+			.andExpect(jsonPath("$.bullets[0].tags[0].slug").value("java"))
+			.andExpect(jsonPath("$.bullets[0].tags[1].slug").value("spring"));
+	}
+
+	@Test
+	void createExperience_withMissingTag_returnsUnprocessableEntity() throws Exception {
+		createProfile();
+
+		mockMvc.perform(post("/api/experiences")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "company": "Acme",
+						  "title": "Engineer",
+						  "startDate": "2020-01-01",
+						  "bullets": [
+						    { "content": "Built REST APIs", "tagIds": [999999] }
+						  ]
+						}
+						"""))
+			.andExpect(status().isUnprocessableEntity())
+			.andExpect(jsonPath("$.message").value("Tag not found: 999999"));
+	}
+
+	@Test
+	void updateExperience_replacesBulletTags() throws Exception {
+		createProfile();
+		long javaTagId = createTag("java", "Java");
+		long backendTagId = createTag("backend", "Backend");
+		long id = createExperience("Acme", "Engineer");
+
+		mockMvc.perform(put("/api/experiences/" + id)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "company": "Acme",
+						  "title": "Engineer",
+						  "location": "Tallinn",
+						  "startDate": "2020-01-01",
+						  "endDate": null,
+						  "bullets": [
+						    { "content": "Built REST APIs", "tagIds": [%d] },
+						    { "content": "Mentored juniors", "tagIds": [%d] }
+						  ]
+						}
+						""".formatted(javaTagId, backendTagId)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.bullets.length()").value(2))
+			.andExpect(jsonPath("$.bullets[0].tags.length()").value(1))
+			.andExpect(jsonPath("$.bullets[0].tags[0].slug").value("java"))
+			.andExpect(jsonPath("$.bullets[1].tags[0].slug").value("backend"));
+	}
+
 	private void createProfile() throws Exception {
 		mockMvc.perform(put("/api/profile")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +241,7 @@ class ExperienceControllerTest {
 						  "contactLinks": []
 						}
 						"""))
-			.andExpect(status().isCreated());
+			.andExpect(status().is2xxSuccessful());
 	}
 
 	private long createExperience(String company, String title) throws Exception {
@@ -187,6 +266,30 @@ class ExperienceControllerTest {
 				  ]
 				}
 				""".formatted(company, title);
+	}
+
+	private long createTag(String slug, String name) throws Exception {
+		MvcResult listResult = mockMvc.perform(get("/api/tags"))
+			.andExpect(status().isOk())
+			.andReturn();
+		JsonNode tags = jsonMapper.readTree(listResult.getResponse().getContentAsString());
+		for (JsonNode tag : tags) {
+			if (slug.equals(tag.get("slug").asString())) {
+				return tag.get("id").asLong();
+			}
+		}
+
+		MvcResult result = mockMvc.perform(post("/api/tags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "slug": "%s",
+						  "name": "%s"
+						}
+						""".formatted(slug, name)))
+			.andExpect(status().isCreated())
+			.andReturn();
+		return readId(result);
 	}
 
 	private long readId(MvcResult result) throws Exception {

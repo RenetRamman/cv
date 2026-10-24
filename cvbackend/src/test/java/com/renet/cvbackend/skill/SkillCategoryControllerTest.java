@@ -145,6 +145,46 @@ class SkillCategoryControllerTest {
 			.andExpect(status().isBadRequest());
 	}
 
+	@Test
+	void createSkillCategory_withTags_returnsTagsOnSkills() throws Exception {
+		createProfile();
+		long javaTagId = createTag("java", "Java");
+
+		mockMvc.perform(post("/api/skill-categories")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "name": "Backend",
+						  "skills": [
+						    { "name": "Java", "tagIds": [%d] },
+						    { "name": "Python" }
+						  ]
+						}
+						""".formatted(javaTagId)))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.skills[0].tags.length()").value(1))
+			.andExpect(jsonPath("$.skills[0].tags[0].slug").value("java"))
+			.andExpect(jsonPath("$.skills[1].tags.length()").value(0));
+	}
+
+	@Test
+	void createSkillCategory_withMissingTag_returnsUnprocessableEntity() throws Exception {
+		createProfile();
+
+		mockMvc.perform(post("/api/skill-categories")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "name": "Backend",
+						  "skills": [
+						    { "name": "Java", "tagIds": [999999] }
+						  ]
+						}
+						"""))
+			.andExpect(status().isUnprocessableEntity())
+			.andExpect(jsonPath("$.message").value("Tag not found: 999999"));
+	}
+
 	private void createProfile() throws Exception {
 		mockMvc.perform(put("/api/profile")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +194,7 @@ class SkillCategoryControllerTest {
 						  "contactLinks": []
 						}
 						"""))
-			.andExpect(status().isCreated());
+			.andExpect(status().is2xxSuccessful());
 	}
 
 	private long createBackendCategory() throws Exception {
@@ -177,6 +217,30 @@ class SkillCategoryControllerTest {
 				  ]
 				}
 				""";
+	}
+
+	private long createTag(String slug, String name) throws Exception {
+		MvcResult listResult = mockMvc.perform(get("/api/tags"))
+			.andExpect(status().isOk())
+			.andReturn();
+		JsonNode tags = jsonMapper.readTree(listResult.getResponse().getContentAsString());
+		for (JsonNode tag : tags) {
+			if (slug.equals(tag.get("slug").asString())) {
+				return tag.get("id").asLong();
+			}
+		}
+
+		MvcResult result = mockMvc.perform(post("/api/tags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "slug": "%s",
+						  "name": "%s"
+						}
+						""".formatted(slug, name)))
+			.andExpect(status().isCreated())
+			.andReturn();
+		return readId(result);
 	}
 
 	private long readId(MvcResult result) throws Exception {

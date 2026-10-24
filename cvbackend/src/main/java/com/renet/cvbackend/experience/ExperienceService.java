@@ -2,6 +2,7 @@ package com.renet.cvbackend.experience;
 
 import com.renet.cvbackend.profile.ProfileRepository;
 import com.renet.cvbackend.profile.ProfileRequiredException;
+import com.renet.cvbackend.tag.ContentTagAssigner;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +12,16 @@ public class ExperienceService {
 
 	private final ExperienceRepository experienceRepository;
 	private final ProfileRepository profileRepository;
+	private final ContentTagAssigner contentTagAssigner;
 
 	public ExperienceService(
 			ExperienceRepository experienceRepository,
-			ProfileRepository profileRepository
+			ProfileRepository profileRepository,
+			ContentTagAssigner contentTagAssigner
 	) {
 		this.experienceRepository = experienceRepository;
 		this.profileRepository = profileRepository;
+		this.contentTagAssigner = contentTagAssigner;
 	}
 
 	@Transactional(readOnly = true)
@@ -82,6 +86,7 @@ public class ExperienceService {
 			var bullet = new ExperienceBullet();
 			bullet.setExperience(experience);
 			bullet.setContent(bulletRequest.content());
+			contentTagAssigner.replaceTags(bullet.getTags(), bulletRequest.tagIds());
 			experience.getBullets().add(bullet);
 		}
 	}

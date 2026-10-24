@@ -5,3 +5,6 @@ cvbackend/src/main/resources/application-local.properties
 # Frontend
 cvfrontend/node_modules/
 cvfrontend/dist/
+
+# Local personal CV populate script (copy from populate-cv.example.sh)
+scripts/populate-cv.local.sh
