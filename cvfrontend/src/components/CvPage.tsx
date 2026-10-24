@@ -1,23 +1,18 @@
-import { useState } from 'react'
 import type { CvData, RoleId } from '../types/cv'
 import { DownloadIcon } from './DownloadIcon'
 import '../styles/cv.css'
 
 interface CvPageProps {
   data: CvData
+  onRoleChange: (roleId: RoleId) => void
 }
 
-export function CvPage({ data }: CvPageProps) {
-  const [selectedRoleId, setSelectedRoleId] = useState<RoleId>(
-    data.defaultRoleId,
-  )
-  const selectedLabel =
-    data.roles.find((role) => role.id === selectedRoleId)?.label ??
+export function CvPage({ data, onRoleChange }: CvPageProps) {
+  const selectedRoleId = data.selectedRoleId
+  const selectedLabel = data.selectedRoleName ||
+    data.roles.find((role) => role.id === selectedRoleId)?.label ||
     selectedRoleId
-  const introduction =
-    data.introductions[selectedRoleId] ??
-    data.introductions.general ??
-    ''
+  const introduction = data.introduction
 
   return (
     <div className="cv-page">
@@ -81,7 +76,7 @@ export function CvPage({ data }: CvPageProps) {
                     : 'cv-role-chip'
                 }
                 aria-pressed={role.id === selectedRoleId}
-                onClick={() => setSelectedRoleId(role.id)}
+                onClick={() => onRoleChange(role.id)}
               >
                 {role.label}
               </button>

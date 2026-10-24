@@ -50,26 +50,50 @@ FROM (VALUES
 WHERE NOT EXISTS (SELECT 1 FROM role_profile rp WHERE rp.slug = v.slug);
 
 -- Weighted tags per role profile (weight: 0.000 .. 1.000)
+-- Highlighting uses score > 0, so overlapping tags make roles look similar in
+-- chips; weights still drive ordering. Prefer distinct tag sets where roles
+-- should highlight differently.
 INSERT INTO role_profile_tag (role_profile_id, tag_id, weight)
 SELECT rp.id, t.id, v.weight
 FROM (VALUES
-    -- general
+    -- general (balanced default)
     ('general', 'backend', 0.500),
     ('general', 'frontend', 0.500),
-    -- java
+    ('general', 'fullstack', 0.400),
+    ('general', 'api', 0.300),
+    -- java (JVM / Spring focused)
     ('java', 'java', 1.000),
     ('java', 'spring', 1.000),
-    ('java', 'backend', 0.900),
-    ('java', 'api', 0.800),
-    ('java', 'database', 0.700),
-    ('java', 'docker', 0.400),
-    -- backend
+    ('java', 'backend', 0.800),
+    ('java', 'api', 0.700),
+    ('java', 'database', 0.600),
+    ('java', 'docker', 0.300),
+    -- backend (APIs / data / polyglot server-side)
     ('backend', 'backend', 1.000),
     ('backend', 'api', 0.900),
-    ('backend', 'database', 0.800),
-    ('backend', 'java', 0.700),
-    ('backend', 'spring', 0.700),
-    ('backend', 'docker', 0.500)
+    ('backend', 'database', 0.900),
+    ('backend', 'python', 0.700),
+    ('backend', 'java', 0.600),
+    ('backend', 'spring', 0.500),
+    ('backend', 'docker', 0.500),
+    ('backend', 'data', 0.400),
+    -- fullstack (frontend + backend + integration)
+    ('fullstack', 'fullstack', 1.000),
+    ('fullstack', 'frontend', 1.000),
+    ('fullstack', 'backend', 0.900),
+    ('fullstack', 'api', 0.800),
+    ('fullstack', 'java', 0.600),
+    ('fullstack', 'spring', 0.500),
+    ('fullstack', 'database', 0.500),
+    ('fullstack', 'docker', 0.400),
+    ('fullstack', 'python', 0.300),
+    -- ml-ai
+    ('ml-ai', 'ml', 1.000),
+    ('ml-ai', 'ai', 1.000),
+    ('ml-ai', 'python', 0.900),
+    ('ml-ai', 'data', 0.800),
+    ('ml-ai', 'backend', 0.400),
+    ('ml-ai', 'api', 0.300)
     -- ('role-slug', 'tag-slug', 0.800)
 ) AS v(role_slug, tag_slug, weight)
 JOIN role_profile rp ON rp.slug = v.role_slug

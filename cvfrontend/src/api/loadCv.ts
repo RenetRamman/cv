@@ -1,44 +1,22 @@
 import { apiGet } from './client'
-import { mapCvData, type CvApiBundle } from './mapCv'
+import { mapCvResponse } from './mapCv'
 import type { CvData } from '../types/cv'
-import type {
-  EducationResponse,
-  ExperienceResponse,
-  IntroductionResponse,
-  ProfileResponse,
-  ProjectResponse,
-  RoleProfileResponse,
-  SkillCategoryResponse,
-} from './types'
+import type { CvApiResponse } from './types'
 
-export async function loadCv(): Promise<CvData> {
-  const [
-    profile,
-    roleProfiles,
-    introductions,
-    experiences,
-    educations,
-    skillCategories,
-    projects,
-  ] = await Promise.all([
-    apiGet<ProfileResponse>('/api/profile'),
-    apiGet<RoleProfileResponse[]>('/api/role-profiles'),
-    apiGet<IntroductionResponse[]>('/api/introductions'),
-    apiGet<ExperienceResponse[]>('/api/experiences'),
-    apiGet<EducationResponse[]>('/api/educations'),
-    apiGet<SkillCategoryResponse[]>('/api/skill-categories'),
-    apiGet<ProjectResponse[]>('/api/projects'),
-  ])
+const PREFERRED_DEFAULT_ROLE = 'fullstack'
 
-  const bundle: CvApiBundle = {
-    profile,
-    roleProfiles,
-    introductions,
-    experiences,
-    educations,
-    skillCategories,
-    projects,
+export async function loadCv(roleProfileSlug?: string): Promise<CvData> {
+  const slug = roleProfileSlug?.trim() || PREFERRED_DEFAULT_ROLE
+  const path = `/api/cv?roleProfileSlug=${encodeURIComponent(slug)}`
+
+  try {
+    const api = await apiGet<CvApiResponse>(path)
+    return mapCvResponse(api)
+  } catch (error) {
+    if (slug !== 'general') {
+      const fallback = await apiGet<CvApiResponse>('/api/cv')
+      return mapCvResponse(fallback)
+    }
+    throw error
   }
-
-  return mapCvData(bundle)
 }

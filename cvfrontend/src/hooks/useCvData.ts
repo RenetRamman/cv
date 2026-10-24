@@ -1,19 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { loadCv } from '../api/loadCv'
-import type { CvData } from '../types/cv'
+import type { CvData, RoleId } from '../types/cv'
 
 type CvLoadState =
   | { status: 'loading' }
   | { status: 'ready'; data: CvData }
   | { status: 'error'; message: string }
 
-export function useCvData(): CvLoadState {
+export function useCvData(): CvLoadState & {
+  selectRole: (roleId: RoleId) => void
+} {
   const [state, setState] = useState<CvLoadState>({ status: 'loading' })
+  const [roleSlug, setRoleSlug] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     let cancelled = false
+    setState({ status: 'loading' })
 
-    loadCv()
+    loadCv(roleSlug)
       .then((data) => {
         if (!cancelled) {
           setState({ status: 'ready', data })
@@ -31,7 +35,11 @@ export function useCvData(): CvLoadState {
     return () => {
       cancelled = true
     }
+  }, [roleSlug])
+
+  const selectRole = useCallback((roleId: RoleId) => {
+    setRoleSlug(roleId)
   }, [])
 
-  return state
+  return { ...state, selectRole }
 }

@@ -20,6 +20,9 @@ export const placeholderCv: CvData = {
     { id: 'ml-ai', label: 'ML / AI' },
   ],
   defaultRoleId: 'fullstack',
+  selectedRoleId: 'fullstack',
+  selectedRoleName: 'Full Stack',
+  introduction: 'Placeholder full-stack introduction.',
   introductions: {
     java: 'Placeholder Java-focused introduction.',
     backend: 'Placeholder backend-focused introduction.',

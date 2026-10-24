@@ -1,5 +1,61 @@
 export type RoleProfileType = 'GENERAL' | 'PERMANENT' | 'VACANCY'
 
+/** Aggregated role-aware CV from GET /api/cv */
+export interface CvApiResponse {
+  selectedRoleSlug: string
+  selectedRoleName: string
+  fullName: string
+  headline: string
+  email: string
+  phone: string | null
+  location: string | null
+  contactLinks: { label: string; url: string }[]
+  roles: { slug: string; name: string; sortOrder: number }[]
+  introduction: string
+  experiences: {
+    id: number
+    company: string
+    title: string
+    location: string | null
+    startDate: string
+    endDate: string | null
+    relevanceScore: number
+    bullets: { id: number; content: string; relevanceScore: number }[]
+  }[]
+  educations: {
+    id: number
+    institution: string
+    degree: string
+    field: string
+    startDate: string | null
+    endDate: string | null
+    relevanceScore: number
+    bullets: { id: number; content: string; relevanceScore: number }[]
+  }[]
+  skillCategories: {
+    id: number
+    name: string
+    relevanceScore: number
+    skills: {
+      id: number
+      name: string
+      relevanceScore: number
+      highlighted: boolean
+    }[]
+  }[]
+  projects: {
+    id: number
+    title: string
+    description: string | null
+    githubUrl: string | null
+    liveUrl: string | null
+    relevanceScore: number
+    bullets: { id: number; content: string; relevanceScore: number }[]
+    technologies: string[]
+  }[]
+}
+
+/** Legacy shapes kept for placeholders / older helpers if needed */
 export interface ProfileResponse {
   id: number
   fullName: string
