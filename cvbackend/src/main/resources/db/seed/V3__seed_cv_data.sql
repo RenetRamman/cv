@@ -297,5 +297,5 @@ WHERE NOT EXISTS (
     WHERE pt.project_id = p.id AND pt.name = t.name
 );
 
--- Content tagging (experience_bullet_tag, education_bullet_tag, skill_tag,
--- project_bullet_tag) can be added later when you wire relevance (#34).
+-- Content tagging: use the API (tagIds on bullets/skills) or populate-cv.local.sh.
+-- Join tables: experience_bullet_tag, education_bullet_tag, skill_tag, project_bullet_tag.

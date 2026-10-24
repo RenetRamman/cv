@@ -27,4 +27,10 @@ public class TagExceptionHandler {
 		return Map.of("message", exception.getMessage());
 	}
 
+	@ExceptionHandler(ContentTagNotFoundException.class)
+	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+	Map<String, String> handleContentTagNotFound(ContentTagNotFoundException exception) {
+		return Map.of("message", exception.getMessage());
+	}
+
 }
