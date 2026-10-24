@@ -129,6 +129,9 @@ TAG_DATABASE="$(tag_id database)"
 TAG_DOCKER="$(tag_id docker)"
 TAG_PYTHON="$(tag_id python)"
 TAG_ML="$(tag_id ml)"
+TAG_GIT="$(tag_id git)"
+TAG_CURSOR="$(tag_id cursor)"
+TAG_LINUX="$(tag_id linux)"
 
 # ---------------------------------------------------------------------------
 # 1) Profile + contact links  (PUT upserts)
@@ -273,7 +276,9 @@ request POST /api/skill-categories "$(cat <<JSON
   "name": "Tools",
   "skills": [
     { "name": "Docker", "tagIds": [${TAG_DOCKER}] },
-    { "name": "Git" }
+    { "name": "Git", "tagIds": [${TAG_GIT}] },
+    { "name": "Linux", "tagIds": [${TAG_LINUX}] },
+    { "name": "Cursor", "tagIds": [${TAG_CURSOR}] }
   ]
 }
 JSON
