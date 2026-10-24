@@ -217,6 +217,7 @@
     color: #222;
     padding: 0.1rem 0.35rem;
     font-size: 8pt;
+    cursor: default;
   }
 
   .cv-skill-chip.is-highlighted {

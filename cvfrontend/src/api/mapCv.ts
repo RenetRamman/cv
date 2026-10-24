@@ -46,6 +46,7 @@ export function mapCvResponse(api: CvApiResponse): CvData {
     skills: api.skillCategories.map((category) => ({
       name: category.name,
       skills: category.skills.map((skill) => ({
+        id: skill.id,
         name: skill.name,
         highlighted: skill.highlighted,
       })),
