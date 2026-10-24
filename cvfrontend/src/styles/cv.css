@@ -448,11 +448,16 @@
   background: var(--color-surface-white);
   font-size: 0.875rem;
   color: var(--color-ink);
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
     color 160ms ease;
+}
+
+.cv-skill-chip:active {
+  cursor: grabbing;
 }
 
 .cv-skill-chip:hover,

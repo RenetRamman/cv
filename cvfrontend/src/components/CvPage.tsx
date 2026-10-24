@@ -1,7 +1,8 @@
-import { useSkillHighlights } from '../hooks/useSkillHighlights'
+import { useSkillCustomization } from '../hooks/useSkillCustomization'
 import type { CvData, RoleId } from '../types/cv'
 import { projectHomeUrl, publicUrl } from '../utils/projectHomeUrl'
 import { DownloadIcon } from './DownloadIcon'
+import { SkillCustomizer } from './SkillCustomizer'
 import '../styles/cv.css'
 
 interface CvPageProps {
@@ -16,10 +17,8 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
     selectedRoleId
   const introduction = data.introduction
   const siteUrl = projectHomeUrl()
-  const { isHighlighted, toggleSkill } = useSkillHighlights(
-    data.skills,
-    selectedRoleId,
-  )
+  const { groups: skillGroups, toggleSkill, reorderInCategory } =
+    useSkillCustomization(data.skills, selectedRoleId)
 
   const handlePrint = () => {
     const previousTitle = document.title
@@ -165,44 +164,12 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
         ))}
       </section>
 
-      <section className="cv-shell cv-section" aria-labelledby="skills-heading">
-        <div className="cv-section__header">
-          <h2 id="skills-heading" className="cv-label">
-            Skills
-          </h2>
-          <span className="cv-hint cv-hint--accent">
-            Click to customize highlights for {selectedLabel}
-          </span>
-        </div>
-        <div className="cv-skills">
-          {data.skills.map((group) => (
-            <div key={group.name} className="cv-skill-group">
-              <h3 className="cv-skill-group__name">{group.name}</h3>
-              <ul className="cv-skill-chips">
-                {group.skills.map((skill) => {
-                  const highlighted = isHighlighted(skill.id)
-                  return (
-                    <li key={skill.id}>
-                      <button
-                        type="button"
-                        className={
-                          highlighted
-                            ? 'cv-skill-chip is-highlighted'
-                            : 'cv-skill-chip'
-                        }
-                        aria-pressed={highlighted}
-                        onClick={() => toggleSkill(skill.id)}
-                      >
-                        {skill.name}
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
+      <SkillCustomizer
+        groups={skillGroups}
+        selectedLabel={selectedLabel}
+        onToggle={toggleSkill}
+        onReorder={reorderInCategory}
+      />
 
       <section
         className="cv-shell cv-section"
