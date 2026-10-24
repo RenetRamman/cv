@@ -1,6 +1,7 @@
 import { CvPage } from './components/CvPage'
 import { useCvData } from './hooks/useCvData'
 import './styles/cv.css'
+import './styles/cv-print.css'
 
 function App() {
   const cvState = useCvData()
