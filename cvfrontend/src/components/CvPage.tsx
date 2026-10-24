@@ -1,4 +1,5 @@
 import type { CvData, RoleId } from '../types/cv'
+import { projectHomeUrl, publicUrl } from '../utils/projectHomeUrl'
 import { DownloadIcon } from './DownloadIcon'
 import '../styles/cv.css'
 
@@ -13,6 +14,7 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
     data.roles.find((role) => role.id === selectedRoleId)?.label ||
     selectedRoleId
   const introduction = data.introduction
+  const siteUrl = projectHomeUrl()
 
   return (
     <div className="cv-page">
@@ -26,7 +28,7 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
             <a
               key={link.label}
               className="cv-nav__link"
-              href={link.url}
+              href={publicUrl(link.url)}
               target="_blank"
               rel="noreferrer"
             >
@@ -52,6 +54,11 @@ export function CvPage({ data, onRoleChange }: CvPageProps) {
             <span className="cv-hero__dot" aria-hidden="true" />
             <a href={`mailto:${data.email}`}>{data.email}</a>
           </div>
+          {/* Shown in print/PDF only; avoids advertising localhost in the CV body.
+              Browser print margins still need "Headers and footers" unchecked. */}
+          <p className="cv-print-url">
+            <a href={siteUrl}>{siteUrl}</a>
+          </p>
         </div>
 
         <div className="cv-roles">

@@ -199,6 +199,11 @@
   background: var(--color-border);
 }
 
+/* Screen: hidden. Print: shown via cv-print.css */
+.cv-print-url {
+  display: none;
+}
+
 .cv-hero__atmosphere {
   position: absolute;
   top: -4rem;

@@ -1,0 +1,271 @@
+/* Print stylesheet for public CV (issue #45). Screen styles stay in cv.css. */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body {
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  /* —— Hide web-only chrome —— */
+  .cv-nav,
+  .cv-roles,
+  .cv-btn,
+  .cv-footer__actions,
+  .cv-footer__note,
+  .cv-hint,
+  .cv-hero__atmosphere {
+    display: none !important;
+  }
+
+  /* —— Flatten page shell —— */
+  .cv-page {
+    min-height: 0;
+    background: #fff;
+  }
+
+  .cv-shell {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+  }
+
+  .cv-hero {
+    overflow: visible;
+    padding-block: 0 0.75rem;
+  }
+
+  .cv-hero__copy {
+    max-width: none;
+    padding-right: 0;
+    gap: 0.5rem;
+  }
+
+  .cv-hero__name {
+    font-size: 22pt;
+    color: #111;
+  }
+
+  .cv-hero__headline {
+    max-width: none;
+    font-size: 11pt;
+    color: #222;
+  }
+
+  .cv-hero__meta {
+    font-size: 9.5pt;
+    color: #333;
+  }
+
+  .cv-hero__meta a {
+    color: #111;
+    text-decoration: none;
+  }
+
+  .cv-hero__dot {
+    background: #999;
+  }
+
+  .cv-print-url {
+    display: block;
+    margin: 0;
+    font-size: 9pt;
+    color: #333;
+  }
+
+  .cv-print-url a {
+    color: #111;
+    text-decoration: none;
+  }
+
+  /* URL already visible as link text — do not append attr(href) again */
+  .cv-print-url a[href^='http']::after {
+    content: none;
+  }
+
+  /* —— Sections —— */
+  .cv-section {
+    padding-block: 0.65rem;
+  }
+
+  .cv-section__header,
+  .cv-section__label-row {
+    margin-bottom: 0.45rem;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .cv-label {
+    font-size: 8.5pt;
+    color: #111;
+  }
+
+  .cv-badge {
+    background: transparent;
+    color: #333;
+    border: 1px solid #bbb;
+    padding: 0.1rem 0.4rem;
+    font-size: 8pt;
+  }
+
+  .cv-intro__body {
+    border-bottom-color: #ccc;
+    padding-bottom: 0.35rem;
+  }
+
+  .cv-intro__text {
+    max-width: none;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    color: #222;
+  }
+
+  /* —— Entries —— */
+  .cv-entry {
+    padding-block: 0.55rem;
+    border-bottom-color: #ddd;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .cv-entry:first-of-type {
+    padding-top: 0.15rem;
+  }
+
+  .cv-entry__header {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .cv-entry__title,
+  .cv-project__title {
+    font-size: 12pt;
+    color: #111;
+  }
+
+  .cv-entry__subtitle {
+    font-size: 10pt;
+    color: #222;
+  }
+
+  .cv-entry__dates,
+  .cv-entry__location {
+    font-size: 8.5pt;
+    color: #444;
+  }
+
+  .cv-bullets {
+    gap: 0.2rem;
+  }
+
+  .cv-bullets li {
+    font-size: 9.5pt;
+    line-height: 1.4;
+    color: #222;
+  }
+
+  .cv-bullets__mark {
+    color: #555;
+  }
+
+  /* —— Skills —— */
+  .cv-skill-group {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .cv-skill-group__name {
+    font-size: 10pt;
+    color: #111;
+  }
+
+  .cv-skill-chip {
+    background: #fff;
+    border-color: #bbb;
+    color: #222;
+    padding: 0.15rem 0.4rem;
+    font-size: 8.5pt;
+  }
+
+  .cv-skill-chip.is-highlighted {
+    background: #fff;
+    border-color: #111;
+    border-width: 1.5px;
+    color: #111;
+    font-weight: 600;
+  }
+
+  /* —— Projects —— */
+  .cv-project {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    padding: 0.55rem 0;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .cv-project__header {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .cv-project__description {
+    font-size: 9.5pt;
+    color: #222;
+  }
+
+  .cv-project__link {
+    color: #111;
+    text-decoration: none;
+    font-size: 8.5pt;
+  }
+
+  .cv-tech-chip {
+    background: transparent;
+    border: 1px solid #bbb;
+    color: #222;
+    font-size: 8pt;
+    padding: 0.1rem 0.35rem;
+  }
+
+  /* —— Footer (contact strip only) —— */
+  .cv-footer {
+    margin-top: 0.75rem;
+    background: transparent;
+    color: #111;
+    border-top: 1px solid #ccc;
+  }
+
+  .cv-footer__inner {
+    padding-block: 0.5rem 0;
+  }
+
+  .cv-footer__name {
+    font-size: 10pt;
+    color: #111;
+  }
+
+  /* —— External URLs readable in PDF (http + https) —— */
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 7.5pt;
+    font-weight: 400;
+    color: #444;
+    word-break: break-all;
+  }
+}
