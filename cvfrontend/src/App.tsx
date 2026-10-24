@@ -25,7 +25,12 @@ function App() {
     )
   }
 
-  return <CvPage data={cvState.data} />
+  return (
+    <CvPage
+      data={cvState.data}
+      onRoleChange={cvState.selectRole}
+    />
+  )
 }
 
 export default App

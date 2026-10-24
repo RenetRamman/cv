@@ -43,7 +43,7 @@ export interface EducationEntry {
   bullets: string[]
 }
 
-/** View model for the public CV page (mapped from REST responses). */
+/** View model for the public CV page (mapped from GET /api/cv). */
 export interface CvData {
   siteTitle: string
   brandMark: string
@@ -54,6 +54,10 @@ export interface CvData {
   contactLinks: ContactLink[]
   roles: RoleOption[]
   defaultRoleId: RoleId
+  selectedRoleId: RoleId
+  selectedRoleName: string
+  introduction: string
+  /** Kept for compatibility; prefer `introduction` for the active role. */
   introductions: Record<RoleId, string>
   experience: ExperienceEntry[]
   skills: SkillCategory[]
